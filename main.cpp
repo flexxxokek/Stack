@@ -17,7 +17,7 @@ int main( void )
 
     StackPop( stack, &a );
 
-    for( int i = 0; i < 6; i++ )
+    for( int i = 0; i < 4; i++ )
     {
         StackPush( stack, 99 + i );
     }
@@ -27,13 +27,13 @@ int main( void )
     for( int i = 0; i < 5; i++ )
     {
         StackElem x = 0;
+        
+        StackPush( stack, 99 );
 
         StackPop( stack, &x );
     }
 
-    *( ( unsigned long long* ) stack->data - 1 ) = 57;
+    STACK_DUMP( stack );
 
     StackDtor( stack );
-
-    STACK_DUMP( stack );
 }

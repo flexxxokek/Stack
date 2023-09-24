@@ -46,16 +46,15 @@ struct Stack* StackCtor( const char* varName, const char* fileName,
 
     *( unsigned long long* ) stack->data = CHIKEN_DEFAULT_NUM;
 
-    stack->data = ( StackElem* ) ( ( ( unsigned long long* ) stack->data ) + 1 );
+    stack->data = ( StackElem* ) ( ( unsigned long long* ) stack->data + 1 );
 
-    *( unsigned long long* ) pushVoidPtr( 
-                             stack->data, sizeof( StackElem ) * stack->capacity ) = CHIKEN_DEFAULT_NUM;
+    *( unsigned long long* ) ( stack->data + stack->capacity ) = CHIKEN_DEFAULT_NUM;
 
     return stack;
 }
 
 #define ERR_CASE( error )                                   \
-case error:                               \
+case error:                                                 \
     printf( "ERROR %d " #error "\n", error );               \
                                                             \
     return error;   
@@ -67,6 +66,8 @@ STACK_ERRORS PrintError( enum STACK_ERRORS error )
     switch( error )
     {
     ERR_CASE( DATA_PTR_IS_NULL )
+
+    ERR_CASE( SIZE_IS_LOWER_THAN_NULL )
 
     ERR_CASE( CAPACITY_IS_LOWER_THAN_NULL )
 
@@ -97,6 +98,8 @@ STACK_ERRORS StackDtor( struct Stack* stack )
 
         STACK_DUMP( stack );
 
+        putchar( '\n' );
+
         return error;
     }
 
@@ -124,15 +127,14 @@ STACK_ERRORS StackResize( struct Stack* stack )
     }
 
     stack->data = ( StackElem* ) realloc( 
-                                 ( ( unsigned long long* ) stack->data ) - 1,
+                                 ( unsigned long long* ) stack->data - 1,
                                  sizeof( StackElem ) * stack->capacity + sizeof( unsigned long long ) * 2 );
 
-        *( unsigned long long* ) stack->data = CHIKEN_DEFAULT_NUM;
+    *( unsigned long long* ) stack->data = CHIKEN_DEFAULT_NUM;
 
-        stack->data = ( StackElem* ) ( ( unsigned long long* ) stack->data + 1 );
+    stack->data = ( StackElem* ) ( ( unsigned long long* ) stack->data + 1 );
 
-        *( unsigned long long* ) pushVoidPtr( 
-                                 stack->data, sizeof( StackElem ) * stack->capacity ) = CHIKEN_DEFAULT_NUM;
+    *( unsigned long long* ) ( stack->data + stack->capacity ) = CHIKEN_DEFAULT_NUM;
 
     return StackVerify( stack );
 }
@@ -141,7 +143,7 @@ STACK_ERRORS StackVerify( const struct Stack* stack )
 {
     if( stack->size < 0 ) return SIZE_IS_LOWER_THAN_NULL;
     if( stack->size > stack->capacity ) return SIZE_IS_GREATER_THAN_CAPACITY;
-    if( stack->data == NULL ) return DATA_PTR_IS_NULL;
+    if( stack->data == nullptr ) return DATA_PTR_IS_NULL;
 
     if( stack->leftChicken != CHIKEN_DEFAULT_NUM ) return LEFT_CHIKEN_HAS_FALLEN;
     if( stack->leftChicken != CHIKEN_DEFAULT_NUM ) return RIGHT_CHIKEN_HAS_FALLEN;
@@ -183,14 +185,16 @@ STACK_ERRORS StackPush( struct Stack* stack, StackElem elem )
 {
     if( STACK_ERRORS error = StackVerify( stack ) )
     {
+        PrintError( error );
+
         STACK_DUMP( stack );
+
+        putchar( '\n' );
 
         return error;
     }
 
-    stack->data[stack->size] = elem;
-
-    stack->size++;
+    stack->data[stack->size++] = elem;
 
     return ALLRIGHT;
 }
