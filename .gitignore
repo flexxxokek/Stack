@@ -1,7 +1,7 @@
-\*.o
+*.o
 
-\*.exe
+*.exe
 
-\*.log
+*.log
 
-\*.dmp
+*.dmp
