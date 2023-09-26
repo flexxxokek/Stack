@@ -5,35 +5,36 @@
 #include "io.h"
 #include "C:/Users/mvideo/Desktop/TX/TXLib.h"
 
-#define StackCtor( stack )      \
-StackCtor( #stack, __FILE__,    \
-           __func__, __LINE__ );\
-
 int main( void )
 {
-    Stack* stack = StackCtor( stack );
+    Stack stack = {};
+
+    STACK_CTOR( &stack );
 
     StackElem a = 0;
 
-    StackPop( stack, &a );
+    STACK_DUMP( &stack );
+
+    StackPop( &stack, &a );
 
     for( int i = 0; i < 4; i++ )
     {
-        StackPush( stack, 99 + i );
-    }
+        for( ; ; )
+        {
+            STACK_DUMP( &stack );
 
-    STACK_DUMP( stack );
+            StackPush( &stack, 99 + i );
+        }      
+    }
 
     for( int i = 0; i < 5; i++ )
     {
         StackElem x = 0;
         
-        StackPush( stack, 99 );
+        StackPush( &stack, 99 );
 
-        StackPop( stack, &x );
+        StackPop( &stack, &x );
     }
 
-    STACK_DUMP( stack );
-
-    StackDtor( stack );
+    StackDtor( &stack );
 }

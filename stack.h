@@ -6,11 +6,17 @@
 #define SET_DEFAULT_COLOR printf( "\x1b[0m" )
 
 #define STACK_DUMP( stack )                         \
-PrintStack( stack, __FILE__, __func__, __LINE__ );           
+PrintStack( stack, __FILE__, __func__, __LINE__ );    
+
+#define STACK_CTOR( stack )                 \
+StackCtor( stack, #stack, __FILE__,         \
+           __func__, __LINE__ );            \
 
 typedef int StackElem;
 
-const unsigned long long CHIKEN_DEFAULT_NUM = 8;
+const unsigned long long CHIKEN_DEFAULT_NUM = ( 1ull << 63 ) - 1; //разные конст для l r
+
+const size_t STACK_DEFAULT_CAPACITY = 1;
 
 enum STACK_ERRORS
 {
@@ -30,6 +36,10 @@ enum STACK_ERRORS
 
     DATA_RIGHT_CHIKEN_HAS_FALLEN = -106,
 
+    HASH_HAS_FALLEN = -107,
+
+    NOT_ENOUGH_MEMORY = -108,
+
     ALLRIGHT = 0
 };
 
@@ -43,7 +53,7 @@ struct Stack
 
     size_t capacity;
 
-    unsigned long long hash;
+    long long hash;
 
     const char* varName;
 
@@ -51,14 +61,12 @@ struct Stack
 
     const char* funcName;
 
-    size_t line;
+    size_t line; 
 
     unsigned long long int rightChicken;
 };
 
-void* pushVoidPtr( void* ptr, int nbytes );
-
-struct Stack* StackCtor( const char* varName, const char* fileName,
+void StackCtor( struct Stack* stack, const char* varName, const char* fileName,
                         const char* funcName, size_t line );
 
 STACK_ERRORS StackPop( struct Stack* stack, StackElem* elem );
