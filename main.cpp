@@ -19,22 +19,25 @@ int main( void )
 
     for( int i = 0; i < 4; i++ )
     {
-        for( ; ; )
-        {
-            STACK_DUMP( &stack );
+        STACK_DUMP( &stack );
 
-            StackPush( &stack, 99 + i );
-        }      
+        StackPush( &stack, 99 + i );     
     }
 
     for( int i = 0; i < 5; i++ )
-    {
-        StackElem x = 0;
-        
-        StackPush( &stack, 99 );
+    {   
+        StackPush( &stack, 99 + i );
 
-        StackPop( &stack, &x );
+        STACK_DUMP( &stack );
+
+        StackPop( &stack, nullptr );
     }
 
-    StackDtor( &stack );
+    StackPush( &stack, 99 );
+
+    StackPop( &stack, nullptr );
+
+    StackPush( &stack, 99 );
+
+    STACK_DUMP( &stack );
 }

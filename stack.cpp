@@ -19,15 +19,13 @@ static long long HashCalc( const void* stack, size_t size )
     return hash;
 }
 
-static long long HashRefresh( struct Stack* stack )
+static void HashRefresh( struct Stack* stack )
 {
     stack->hash = 0;
 
     long long newHash = HashCalc( stack, sizeof( *stack ) );
 
     stack->hash = newHash;
-
-    return newHash;
 }
 
 
@@ -157,6 +155,8 @@ STACK_ERRORS StackDtor( struct Stack* stack )
 {
     if( STACK_ERRORS error = StackVerify( stack ) )
     {
+        STACK_DUMP( stack );
+
         PrintError( error );
 
         putchar( '\n' );
@@ -168,10 +168,22 @@ STACK_ERRORS StackDtor( struct Stack* stack )
         stack->data[i] = 0;
     
     stack->capacity = -1;
+
     stack->size = -1;
 
+    stack->leftChicken = LEFT_CHIKEN_DEFAULT_NUM;
+
+    stack->rightChicken = RIGHT_CHICKEN_DEFAULT_NUM;
+
+    stack->varName = nullptr;
+
+    stack->fileName = nullptr;
+
+    stack->funcName = nullptr;
+
+    stack->line = -1;
+
     free( ( unsigned long long* ) stack->data - 1 );
-    free( stack );
 
     return ALLRIGHT;
 }
@@ -198,6 +210,8 @@ STACK_ERRORS StackResize( struct Stack* stack )
         stack->capacity /= 2;
     }
 
+    HashRefresh( stack );
+
     StackElem* dp = ( StackElem* ) realloc( ( unsigned long long* ) stack->data - 1,
                                    sizeof( StackElem ) * stack->capacity + sizeof( unsigned long long ) * 2 );
 
@@ -220,7 +234,6 @@ STACK_ERRORS StackResize( struct Stack* stack )
 
     if( STACK_ERRORS error = StackVerify( stack ) )
     {
-
         STACK_DUMP( stack );
 
         PrintError( error );
@@ -254,6 +267,8 @@ STACK_ERRORS StackPop( struct Stack* stack, StackElem* elem )
 {
     if( STACK_ERRORS error = StackVerify( stack ) )
     {
+        STACK_DUMP( stack );
+
         PrintError( error );
 
         putchar( '\n' );
@@ -269,8 +284,6 @@ STACK_ERRORS StackPop( struct Stack* stack, StackElem* elem )
             *elem = stack->data[stack->size];
         
         stack->data[stack->size] = 0;
-
-        return ALLRIGHT;
     }
     else
     {
@@ -283,17 +296,19 @@ STACK_ERRORS StackPop( struct Stack* stack, StackElem* elem )
         SET_DEFAULT_COLOR;
     }
 
+    HashRefresh( stack );
+
     if( stack->size == stack->capacity || stack->size < stack->capacity / 3 )
     {
-        HashRefresh( stack );
-
         StackResize( ( Stack* ) stack );
-    }
 
-    HashRefresh( stack );
+        HashRefresh( stack );
+    }
 
     if( STACK_ERRORS error = StackVerify( stack ) )
     {
+        STACK_DUMP( stack );
+
         PrintError( error );
 
         putchar( '\n' );
@@ -319,20 +334,18 @@ STACK_ERRORS StackPush( struct Stack* stack, StackElem elem )
 
     stack->data[stack->size++] = elem;
 
+    HashRefresh( stack );
+
     if( stack->size == stack->capacity || stack->size < stack->capacity / 3 )
     {
-        HashRefresh( stack );
-
         StackResize( ( Stack* ) stack );
-    }
 
-    HashRefresh( stack );
+        HashRefresh( stack );
+    }
 
     if( STACK_ERRORS error = StackVerify( stack ) )
     {
         STACK_DUMP( stack );
-
-        HashRefresh( stack );
 
         PrintError( error );
      
@@ -367,17 +380,17 @@ STACK_ERRORS PrintStack( const struct Stack* stack, const char* fileName,
     }
     else
     {
-    printf( "\tStack elements:\n" "\t{\n" );
+        printf( "\tStack elements:\n" "\t{\n" );
 
-    for( int i = 0; i < stack->capacity; i++ )
-    {                 
-        if( i < stack->size )                                           
-            printf( "\t\t" "*[%d] = %d\n", i, stack->data[i] ); 
-        else
-            printf( "\t\t" " [%d] = %d\n", i, stack->data[i] );
-    }  
-    
-    printf( "\t}\n\n" );
+        for( int i = 0; i < stack->capacity; i++ )
+        {                 
+            if( i < stack->size )                                           
+                printf( "\t\t" "*[%d] = %d\n", i, stack->data[i] ); 
+            else
+                printf( "\t\t" " [%d] = %d\n", i, stack->data[i] );
+        }  
+        
+        printf( "\t}\n\n" );
     }
     
     SET_GRAY_COLOR;
