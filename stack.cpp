@@ -61,9 +61,9 @@ static void PrintFileinf( const struct Stack* stack, const char* fileName,
 void StackCtor( Stack* stack, const char* varName, const char* fileName,
                          const char* funcName, const size_t line )
 {
-    stack->leftChicken = CHIKEN_DEFAULT_NUM;
+    stack->leftChicken = LEFT_CHIKEN_DEFAULT_NUM;
 
-    stack->rightChicken = CHIKEN_DEFAULT_NUM;
+    stack->rightChicken = RIGHT_CHICKEN_DEFAULT_NUM;
 
     stack->varName = varName;
 
@@ -95,11 +95,11 @@ void StackCtor( Stack* stack, const char* varName, const char* fileName,
         
     stack->data = dp;
 
-    *( unsigned long long* ) stack->data = CHIKEN_DEFAULT_NUM;
+    *( unsigned long long* ) stack->data = LEFT_CHIKEN_DEFAULT_NUM;
 
     stack->data = ( StackElem* ) ( ( unsigned long long* ) stack->data + 1 );
 
-    *( unsigned long long* ) ( stack->data + stack->capacity ) = CHIKEN_DEFAULT_NUM;
+    *( unsigned long long* ) ( stack->data + stack->capacity ) = RIGHT_CHICKEN_DEFAULT_NUM;
 
     HashRefresh( stack );
 
@@ -210,11 +210,11 @@ STACK_ERRORS StackResize( struct Stack* stack )
 
     stack->data = dp;
 
-    *( unsigned long long* ) stack->data = CHIKEN_DEFAULT_NUM;
+    *( unsigned long long* ) stack->data = LEFT_CHIKEN_DEFAULT_NUM;
 
     stack->data = ( StackElem* ) ( ( unsigned long long* ) stack->data + 1 );
 
-    *( unsigned long long* ) ( stack->data + stack->capacity ) = CHIKEN_DEFAULT_NUM;
+    *( unsigned long long* ) ( stack->data + stack->capacity ) = RIGHT_CHICKEN_DEFAULT_NUM;
 
     HashRefresh( stack );
 
@@ -239,11 +239,11 @@ STACK_ERRORS StackVerify( const struct Stack* stack )
     if( stack->size > stack->capacity ) return SIZE_IS_GREATER_THAN_CAPACITY;
     if( stack->data == nullptr ) return DATA_PTR_IS_NULL;
 
-    if( stack->leftChicken != CHIKEN_DEFAULT_NUM ) return LEFT_CHIKEN_HAS_FALLEN;
-    if( stack->leftChicken != CHIKEN_DEFAULT_NUM ) return RIGHT_CHIKEN_HAS_FALLEN;
+    if( stack->leftChicken != LEFT_CHIKEN_DEFAULT_NUM ) return LEFT_CHIKEN_HAS_FALLEN;
+    if( stack->rightChicken != RIGHT_CHICKEN_DEFAULT_NUM ) return RIGHT_CHIKEN_HAS_FALLEN;
 
-    if( *( ( unsigned long long* ) stack->data - 1 ) != CHIKEN_DEFAULT_NUM ) return DATA_LEFT_CHIKEN_HAS_FALLEN;
-    if( *( ( unsigned long long* ) ( stack->data + stack->capacity ) ) != CHIKEN_DEFAULT_NUM ) return DATA_RIGHT_CHIKEN_HAS_FALLEN;
+    if( *( ( unsigned long long* ) stack->data - 1 ) != LEFT_CHIKEN_DEFAULT_NUM ) return DATA_LEFT_CHIKEN_HAS_FALLEN;
+    if( *( ( unsigned long long* ) ( stack->data + stack->capacity ) ) != RIGHT_CHICKEN_DEFAULT_NUM ) return DATA_RIGHT_CHIKEN_HAS_FALLEN;
 
     if( !HashCheck( ( Stack* ) stack ) ) return HASH_HAS_FALLEN;
 

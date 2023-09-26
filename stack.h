@@ -14,7 +14,9 @@ StackCtor( stack, #stack, __FILE__,         \
 
 typedef int StackElem;
 
-const unsigned long long CHIKEN_DEFAULT_NUM = ( 1ull << 63 ) - 1; //разные конст для l r
+const unsigned long long LEFT_CHIKEN_DEFAULT_NUM = ( 1ull << 63 ) - 1;
+
+const unsigned long long RIGHT_CHICKEN_DEFAULT_NUM = ( 0xffffffffffffffff );
 
 const size_t STACK_DEFAULT_CAPACITY = 1;
 
@@ -67,7 +69,7 @@ struct Stack
 };
 
 void StackCtor( struct Stack* stack, const char* varName, const char* fileName,
-                        const char* funcName, size_t line );
+                const char* funcName, size_t line );
 
 STACK_ERRORS StackPop( struct Stack* stack, StackElem* elem );
 
