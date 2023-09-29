@@ -7,7 +7,7 @@ void* pushVoidPtr( void* ptr, int nbytes )
     return ( void* ) ( ( char* ) ptr + nbytes );
 }
 
-static long long HashCalc( const void* stack, size_t size )
+long long HashCalc( const void* stack, size_t size )
 {
     long long hash = 5483;
 
@@ -106,7 +106,7 @@ void StackCtor( Stack* stack, const char* varName, const char* fileName,
     stack->capacity = STACK_DEFAULT_CAPACITY;
 
     StackElem* dp = ( StackElem* ) ( calloc( 1, sizeof( StackElem ) * STACK_DEFAULT_CAPACITY +
-                                             sizeof( unsigned long long ) * 2 ) );
+                                             sizeof( unsigned long long ) * 1 ) );
 
     if( dp == nullptr )
     {   
