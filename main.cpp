@@ -13,15 +13,13 @@ int main( void )
 
     StackElem a = 0;
 
-    STACK_DUMP( &stack );
-
     StackPop( &stack, &a );
 
     for( int i = 0; i < 4; i++ )
     {
         STACK_DUMP( &stack );
 
-        StackPush( &stack, 99 + i );     
+        StackPush( &stack, 99 + i );
     }
 
     for( int i = 0; i < 5; i++ )
@@ -31,13 +29,13 @@ int main( void )
         STACK_DUMP( &stack );
 
         StackPop( &stack, nullptr );
+
+        StackPush( &stack, 99 );
     }
 
     StackPush( &stack, 99 );
 
     StackPop( &stack, nullptr );
-
-    StackPush( &stack, 99 );
 
     STACK_DUMP( &stack );
 }

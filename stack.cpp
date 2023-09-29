@@ -23,9 +23,15 @@ static void HashRefresh( struct Stack* stack )
 {
     stack->hash = 0;
 
+    stack->dataHash = 0;
+
     long long newHash = HashCalc( stack, sizeof( *stack ) );
 
+    long long newDataHash = HashCalc( stack->data, sizeof( StackElem ) * stack->capacity );
+
     stack->hash = newHash;
+
+    stack->dataHash = newDataHash;
 }
 
 
@@ -33,7 +39,11 @@ static bool HashCheck( struct Stack* stack )
 {
     long long oldHash = stack->hash;
 
+    long long dataHash = stack->dataHash;
+
     stack->hash = 0;
+
+    stack->dataHash = 0;
 
     long long newHash = HashCalc( stack, sizeof( *stack ) );
 
@@ -43,6 +53,26 @@ static bool HashCheck( struct Stack* stack )
     }
 
     stack->hash = newHash;
+
+    stack->dataHash = dataHash;
+
+    return true;
+}
+
+static bool DataHashCheck( struct Stack* stack )
+{
+    long long oldDataHash = stack->dataHash;
+
+    stack->dataHash = 0;
+
+    long long newDataHash = HashCalc( stack->data, sizeof( StackElem ) * stack->capacity );
+
+    if( newDataHash != oldDataHash )
+    {
+        return false;
+    }
+
+    stack->dataHash = newDataHash;
 
     return true;
 }
@@ -139,6 +169,8 @@ STACK_ERRORS PrintError( enum STACK_ERRORS error )
     FATAL_ERR_CASE( DATA_RIGHT_CHIKEN_HAS_FALLEN )
 
     FATAL_ERR_CASE( HASH_HAS_FALLEN )
+
+    FATAL_ERR_CASE( DATA_HASH_HAS_FALLEN )
 
     default:
         SET_DEFAULT_COLOR;
@@ -259,6 +291,7 @@ STACK_ERRORS StackVerify( const struct Stack* stack )
     if( *( ( unsigned long long* ) ( stack->data + stack->capacity ) ) != RIGHT_CHICKEN_DEFAULT_NUM ) return DATA_RIGHT_CHIKEN_HAS_FALLEN;
 
     if( !HashCheck( ( Stack* ) stack ) ) return HASH_HAS_FALLEN;
+    if( !DataHashCheck( ( Stack* ) stack ) ) return DATA_HASH_HAS_FALLEN;
 
     return ALLRIGHT;
 }

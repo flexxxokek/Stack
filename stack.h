@@ -40,7 +40,9 @@ enum STACK_ERRORS
 
     HASH_HAS_FALLEN = -107,
 
-    NOT_ENOUGH_MEMORY = -108,
+    DATA_HASH_HAS_FALLEN = -108,
+
+    NOT_ENOUGH_MEMORY = -109,
 
     ALLRIGHT = 0
 };
@@ -56,6 +58,8 @@ struct Stack
     size_t capacity;
 
     long long hash;
+
+    long long dataHash;
 
     const char* varName;
 
