@@ -242,8 +242,6 @@ STACK_ERRORS StackResize( struct Stack* stack )
         stack->capacity /= 2;
     }
 
-    HashRefresh( stack );
-
     StackElem* dp = ( StackElem* ) realloc( ( unsigned long long* ) stack->data - 1,
                                    sizeof( StackElem ) * stack->capacity + sizeof( unsigned long long ) * 2 );
 
